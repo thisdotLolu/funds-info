@@ -21,7 +21,6 @@ export const useLogout = () =>{
                 setIsPending(false)
             setError(null)
             }
-            
         } catch (error) {
             if(!isCancelled){
             console.log(error)
