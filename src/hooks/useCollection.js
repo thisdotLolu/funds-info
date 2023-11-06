@@ -3,18 +3,22 @@ import { useEffect } from "react"
 import { projectFirestore } from "../firebase/config"
 import { useRef } from "react"
 
-export const useCollection=(collection,_query)=>{
+export const useCollection=(collection,_query,_orderBy)=>{
     const [documents, setDocuments] = useState(null)
     const [error,setError] = useState(null)
 
     //preventing infinte loops when adding a reference type to an array dependency
     const query = useRef(_query).current
+    const orderBy = useRef(_orderBy).current
 
     useEffect(()=>{
         let ref = projectFirestore.collection(collection)
 
         if(query){
             ref = ref.where(...query)
+        }
+        if(orderBy){
+            ref = ref.orderBy(...orderBy)
         }
 
     const unsubscribe = ref.onSnapshot((snapshot)=>{
@@ -32,7 +36,7 @@ export const useCollection=(collection,_query)=>{
     })
     //usnsubscribe on unmount
     return ()=>unsubscribe()
-    },[collection,query])
+    },[collection,query,orderBy])
     
     return {documents,error}
 }
